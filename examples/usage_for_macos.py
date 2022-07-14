@@ -1,14 +1,13 @@
 import asyncio
-import os
 import sys
 import logging
 import platform
 
+from enterble import DeviceScanner, FlowtimeCollector
+
+
 if sys.version_info < (3, 7):
     asyncio.get_running_loop = asyncio._get_running_loop
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, BASE_DIR)
 
 
 logging.basicConfig(
@@ -16,10 +15,6 @@ logging.basicConfig(
     format='%(levelname)s - %(asctime)s - %(name)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-
-from enterble.ble.scanner import DeviceScanner
-from enterble.adapter.flowtime.collector import FlowtimeCollector
 
 
 def bleak_log(level=logging.INFO):
