@@ -78,7 +78,7 @@ class Collector(object):
 
         for char_specifier in self.notify_callback.keys():
             await self.device.stop_notify(char_specifier)
-        self.device.disconnect()
+        await self.device.disconnect()
         logger.info('Device stopped')
 
     async def get_name(self):
