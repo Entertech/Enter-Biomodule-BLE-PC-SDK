@@ -3,6 +3,8 @@ import sys
 import logging
 import platform
 
+from bleak.backends.corebluetooth.client import BleakClientCoreBluetooth
+
 from enterble import DeviceScanner, FlowtimeCollector
 
 
@@ -45,6 +47,9 @@ async def get_device():
 
 async def data_collector():
 
+    async def device_disconnected(device: BleakClientCoreBluetooth):
+        logger.info(f'Device disconnected: {device}')
+
     async def soc_callback(soc):
         logger.info(f'SOC: {soc}')
         pass
@@ -65,14 +70,15 @@ async def data_collector():
     device_identify = (
         "FB:EC:25:DE:1A:92"
         if platform.system() != "Darwin"
-        # else "AAE31983-8A63-BBA9-3CD4-3EBECC8C315D"
-        else "D5D4362A-1690-4204-B797-3015EEDB510E"
+        else "AAE31983-8A63-BBA9-3CD4-3EBECC8C315D"
+        # else "7500F2E8-4606-48EF-8CAB-72E1949D15E4"
     )
 
     collector = FlowtimeCollector(
         name='Flowtime',
         model_nbr_uuid=model_nbr_uuid,
         device_identify=device_identify,
+        device_disconnected_callback=device_disconnected,
         soc_data_callback=soc_callback,
         wear_status_callback=wear_status_callback,
         eeg_data_callback=eeg_data_collector,

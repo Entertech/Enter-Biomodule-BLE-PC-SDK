@@ -1,9 +1,11 @@
 import struct
 import logging
 import time
+from typing import Awaitable, Callable, Optional
 
 from bleak.backends.device import BLEDevice
 from bleak.backends.service import BleakGATTServiceCollection
+from bleak.backends.client import BaseBleakClient
 from bleak import BleakClient, BleakError
 
 
@@ -52,19 +54,31 @@ class SOC(object):
 # 通用设备
 class Device(object):
 
-    def __init__(self, device: BLEDevice, soc_cal_call: callable = None) -> None:
+    def __init__(
+        self,
+        device: BLEDevice,
+        disconnected_callback: Optional[Callable[["BaseBleakClient"], None]] = None,
+        soc_cal_call: Awaitable = None
+    ) -> None:
         """设备初始化
 
         Args:
             device (BLEDevice): 设备元信息对象(bleak 设备类)
-            soc_cal_call (callable, optional): 电量自定义计算回调函数. Defaults to None.
+            disconnected_callback (Awaitable, optional): 设备断开回调函数. Defaults to None.
+            soc_cal_call (Awaitable, optional): 电量自定义计算回调函数. Defaults to None.
         """
         self.device: BLEDevice = device
-        self.soc_col_call: callable = soc_cal_call
+        self.disconnected_callback: Optional[Callable[["BaseBleakClient"], None]] = disconnected_callback
+        self.soc_col_call: Awaitable = soc_cal_call
         self.soc: SOC = SOC(soc_cal_call)
         self._client: BleakClient = None
         self.connected: bool = False
         logger.info(f'Device initialized: {self}')
+
+    async def set_disconnected_callback(self, callback: Optional[Callable[["BaseBleakClient"], None]]) -> None:
+        self.disconnected_callback = callback
+        if self._client:
+            self._client.set_disconnected_callback(self.disconnected_callback)
 
     async def set_soc_cal_call(self, callback: callable):
         """设置电量自定义计算回调函数
@@ -91,6 +105,8 @@ class Device(object):
         logger.info(f'Connecting to {self}')
         self._client = BleakClient(self.identify)
         await self._client.connect()
+        if self.disconnected_callback:
+            await self._client.set_disconnected_callback(self.disconnected_callback)
         self.connected = True
         logger.info(f'Connected to {self}')
 

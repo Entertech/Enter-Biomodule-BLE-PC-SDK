@@ -1,7 +1,9 @@
-from typing import Dict
+from typing import Dict, Optional, Callable, Any
 import asyncio
 import logging
 
+from bleak.backends.corebluetooth.client import BleakClientCoreBluetooth
+from bleak.backends.client import BaseBleakClient
 from enterble.ble.device import Device
 from enterble.ble.scanner import DeviceScanner
 
@@ -17,6 +19,7 @@ class Collector(object):
         name: str,
         model_nbr_uuid: str,
         device_identify: str,
+        device_disconnected_callback: Optional[Callable[["BaseBleakClient"], None]],
         notify_callback_table: Dict[str, callable],
         before_notify_callback_table: Dict[str, bytes] = None,
         after_notify_callback_table: Dict[str, bytes] = None,
@@ -28,6 +31,7 @@ class Collector(object):
             name (str): 设备名称
             model_nbr_uuid (str): 设备广播 UUID
             device_identify (str): 设备标识
+            device_disconnected_callback (Optional[Callable[["BaseBleakClient"], None]]): 设备断开回调
             notify_callback_table (Dict[str, callable]): 通知回调表
             before_notify_callback_table (Dict[str, bytes], optional): 启动通知前执行的操作及回调. Defaults to None.
             after_notify_callback_table (Dict[str, bytes], optional): 启动通知后执行的操作及回调. Defaults to None.
@@ -37,6 +41,7 @@ class Collector(object):
         self.name: str = name
         self.model_nbr_uuid: str = model_nbr_uuid
         self.device_identify: str = device_identify
+        self.device_disconnected_callback: Optional[Callable[["BaseBleakClient"], None]] = device_disconnected_callback
         self.notify_callback: Dict[str, callable] = notify_callback_table
         self.before_notify_callback: Dict[str, bytes] = before_notify_callback_table
         self.after_notify_callback: Dict[str, bytes] = after_notify_callback_table
@@ -77,6 +82,10 @@ class Collector(object):
                 await self.device.write_gatt_char(char_specifier, data)
                 logger.info('Write down code after notify: %s: %s', char_specifier, data)
 
+        # 设备连接回调
+        if self.device_disconnected_callback:
+            await self.device.set_disconnected_callback(self.device_disconnected)
+
         # 获取设备基础信息
         await self.device.get_soc()
         logger.info(f'{self.name} initialized')
@@ -89,6 +98,11 @@ class Collector(object):
         logger.info('Device firmware version: {}'.format(await self.get_firmware_version()))
         logger.info('Device hardware version: {}'.format(await self.get_hardware_version()))
         logger.info('Device manufacturer: {}'.format(await self.get_manufacturer()))
+
+    def device_disconnected(self, device: BleakClientCoreBluetooth) -> None:
+        """设备断开回调"""
+        if self.device_disconnected_callback:
+            asyncio.ensure_future(self.device_disconnected_callback(device))
 
     async def wait_for_stop(self):
         """设备运行、停止、异常等状态监听"""

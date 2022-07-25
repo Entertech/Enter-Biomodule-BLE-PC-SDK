@@ -1,5 +1,8 @@
 from math import exp
 import struct
+from typing import Optional, Callable
+
+from bleak.backends.client import BaseBleakClient
 
 from enterble.collector.collector import Collector
 
@@ -45,6 +48,7 @@ class FlowtimeCollector(Collector):
         name: str,
         model_nbr_uuid: str,
         device_identify: str,
+        device_disconnected_callback: Optional[Callable[["BaseBleakClient"], None]],
         soc_data_callback: callable,
         wear_status_callback: callable,
         eeg_data_callback: callable,
@@ -56,11 +60,13 @@ class FlowtimeCollector(Collector):
             name (str): 设备名称
             model_nbr_uuid (str): 设备广播 UUID
             device_identify (str): 设备标识
+            device_disconnected_callback (Optional[Callable[["BaseBleakClient"], None]]): 设备断开回调
             soc_data_callback (callable): 电量数据回调
             wear_status_callback (callable): 穿戴状态回调
             eeg_data_callback (callable): EEG 数据回调
             hr_data_callback (callable): HR 数据回调
         """
+        self.device_disconnected_callback = device_disconnected_callback
         self.soc_data_callback = soc_data_callback
         self.wear_status_callback = wear_status_callback
         self.eeg_data_callback = eeg_data_callback
@@ -79,6 +85,7 @@ class FlowtimeCollector(Collector):
             name=name,
             model_nbr_uuid=model_nbr_uuid,
             device_identify=device_identify,
+            device_disconnected_callback=device_disconnected_callback,
             notify_callback_table=notify_callback_table,
             before_notify_callback_table=None,
             after_notify_callback_table=after_notify_callback_table,
