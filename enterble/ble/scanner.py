@@ -38,6 +38,6 @@ class DeviceScanner(object):
     async def get_device(cls, name: str, model_nbr_uuid: str, device_identify: str, timeout: int = 5) -> Device:
         devices = await cls.discover(name, model_nbr_uuid, timeout)
         for device in devices:
-            if device.identify == device_identify:
+            if device.identify.upper() == device_identify.upper():
                 return device
         return None
