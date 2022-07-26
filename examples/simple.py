@@ -3,7 +3,7 @@ import sys
 import logging
 import platform
 
-from bleak.backends.corebluetooth.client import BleakClientCoreBluetooth
+from bleak.backends.client import BaseBleakClient
 
 from enterble import DeviceScanner, FlowtimeCollector
 
@@ -47,7 +47,7 @@ async def get_device():
 
 async def data_collector():
 
-    async def device_disconnected(device: BleakClientCoreBluetooth):
+    async def device_disconnected(device: BaseBleakClient):
         logger.info(f'Device disconnected: {device}')
 
     async def soc_callback(soc):

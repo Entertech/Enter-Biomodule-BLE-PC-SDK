@@ -1,8 +1,7 @@
-from typing import Dict, Optional, Callable, Any
+from typing import Dict, Optional, Callable
 import asyncio
 import logging
 
-from bleak.backends.corebluetooth.client import BleakClientCoreBluetooth
 from bleak.backends.client import BaseBleakClient
 from enterble.ble.device import Device
 from enterble.ble.scanner import DeviceScanner
@@ -99,7 +98,7 @@ class Collector(object):
         logger.info('Device hardware version: {}'.format(await self.get_hardware_version()))
         logger.info('Device manufacturer: {}'.format(await self.get_manufacturer()))
 
-    def device_disconnected(self, device: BleakClientCoreBluetooth) -> None:
+    def device_disconnected(self, device: Optional[Callable[["BaseBleakClient"], None]]) -> None:
         """设备断开回调"""
         if self.device_disconnected_callback:
             asyncio.ensure_future(self.device_disconnected_callback(device))
