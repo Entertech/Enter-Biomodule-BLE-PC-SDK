@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='enterble',
-    version='1.0.5',
+    version='1.0.6',
     description='BLE device scanner and data collector for Flowtime',
     classifiers=[
         'Natural Language :: Chinese (Simplified)',

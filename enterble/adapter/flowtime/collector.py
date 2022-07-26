@@ -126,7 +126,7 @@ class FlowtimeCollector(Collector):
         """
         soc_data = struct.unpack('>B', data)[0]
         soc_percentage = await self.soc_cal(soc_data)
-        self.device.soc.update_soc(soc_percentage)
+        await self.device.soc.update_soc(soc_percentage)
         await self.soc_data_callback(soc_percentage)
 
     async def _wear_notify_callback(self, sender: int, data: bytearray):

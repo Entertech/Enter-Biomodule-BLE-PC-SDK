@@ -1,7 +1,7 @@
 import struct
 import logging
 import time
-from typing import Awaitable, Callable, Optional
+from typing import Awaitable, Callable, Optional, Any
 
 from bleak.backends.device import BLEDevice
 from bleak.backends.service import BleakGATTServiceCollection
@@ -167,7 +167,7 @@ class Device(object):
         model = struct.unpack('>{}s'.format(len(model)), model)
         return model[0].decode('utf-8')
 
-    async def get_connect_params(self) -> str:
+    async def get_connect_params(self) -> Any:
         """获取设备连接参数
 
         Returns:
@@ -177,7 +177,7 @@ class Device(object):
         if params is None:
             return None
         params = struct.unpack('>{}s'.format(len(params)), params)
-        return params[0].decode('utf-8')
+        return params[0]
 
     async def get_soc(self) -> SOC:
         """获取设备电量信息
