@@ -19,6 +19,25 @@ Enter BLE SDK For PC 是[回车科技](https://www.entertech.cn/)提供的，适
 
 查看 [examples](https://github.com/Entertech/Enter-Biomodule-BLE-PC-SDK/tree/main/examples)
 
+### 指引
+1. 打开扫描设备
+    - `loop.run_until_complete(device_discover())`
+2. 运行 simple.py 
+3. 观察设备扫描情况
+4. 修改设备唯一 ID 为你扫到的自己的设备（macOS 系统用 UUID、Win 系统用 MAC 地址）
+    - ```python
+      device_identify = (
+          "d2:ab:3f:c9:37:ad"
+          if platform.system() != "Darwin"
+          else "D5D4362A-1690-4204-B797-3015EEDB510E"
+      )
+      ```
+5. 打开采集数据的代码
+    - `loop.run_until_complete(data_collector())`
+6. 运行 simple.py
+
+应该就可以了
+
 Simple:
 
 ```python
