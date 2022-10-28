@@ -75,10 +75,13 @@ class Device(object):
         self.connected: bool = False
         logger.info(f'Device initialized: {self}')
 
-    async def set_disconnected_callback(self, callback: Optional[Callable[["BaseBleakClient"], None]]) -> None:
+    async def set_disconnected_callback(self, callback: callable):
+        """设置设备断开回调函数
+
+        Args:
+            callback (callable): 设备断开回调函数
+        """
         self.disconnected_callback = callback
-        if self._client:
-            self._client.set_disconnected_callback(self.disconnected_callback)
 
     async def set_soc_cal_call(self, callback: callable):
         """设置电量自定义计算回调函数
@@ -103,10 +106,11 @@ class Device(object):
     async def connect(self) -> None:
         """连接设备"""
         logger.info(f'Connecting to {self}')
-        self._client = BleakClient(self.identify)
+        self._client = BleakClient(
+            address_or_ble_device=self.identify,
+            disconnected_callback=self.disconnected_callback,
+        )
         await self._client.connect()
-        if self.disconnected_callback:
-            await self._client.set_disconnected_callback(self.disconnected_callback)
         self.connected = True
         logger.info(f'Connected to {self}')
 

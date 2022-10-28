@@ -91,7 +91,7 @@ class Collector(object):
         logger.info('Device name: {}'.format(await self.get_name()))
         logger.info('Device model: {}'.format(await self.get_model()))
         logger.info('Device connect params: {}'.format(await self.get_connect_params()))
-        logger.info('Device soc: {}%%'.format(await self.get_soc()))
+        logger.info('Device soc: {}%'.format(await self.get_soc()))
         logger.info('Device MAC address: {}'.format(await self.get_mac_address()))
         logger.info('Device serial number: {}'.format(await self.get_serial_number()))
         logger.info('Device firmware version: {}'.format(await self.get_firmware_version()))

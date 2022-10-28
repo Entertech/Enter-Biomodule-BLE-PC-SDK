@@ -1,6 +1,6 @@
 from typing import List
 
-from bleak import discover
+from bleak import BleakScanner
 
 from enterble.ble.device import Device
 
@@ -22,14 +22,18 @@ class DeviceScanner(object):
         if model_nbr_uuid is None:
             if timeout == -1:
                 while True:
-                    devices = await discover()
+                    devices = await BleakScanner.discover()
                     if len(devices) > 0:
                         return [Device(device) for device in devices if name is None or device.name == name]
-            return [Device(device) for device in await discover(timeout=timeout) if name is None or device.name == name]
+            return [
+                Device(device)
+                for device in await BleakScanner.discover(timeout=timeout)
+                if name is None or device.name == name
+            ]
 
         model_nbr_uuid = model_nbr_uuid.lower()
         if timeout == -1:
-            _devices = await discover()
+            _devices = await BleakScanner.discover()
             devices = []
             for device in _devices:
                 if model_nbr_uuid in device.metadata['uuids'] and (name is None or device.name == name):
@@ -37,7 +41,7 @@ class DeviceScanner(object):
             if len(devices) > 0:
                 return devices
 
-        _devices = await discover(timeout=timeout)
+        _devices = await BleakScanner.discover(timeout=timeout)
         devices = []
         for device in _devices:
             if model_nbr_uuid in device.metadata['uuids'] and (name is None or device.name == name):
