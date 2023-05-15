@@ -49,7 +49,7 @@ class DeviceScanner(object):
         return devices
 
     @classmethod
-    async def get_device(cls, name: str, model_nbr_uuid: str, device_identify: str, timeout: int = 5) -> Device:
+    async def get_device(cls, model_nbr_uuid: str, device_identify: str, name: str = None, timeout: int = 5) -> Device:
         """获取设备
 
         Args:

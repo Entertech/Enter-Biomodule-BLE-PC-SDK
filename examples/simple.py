@@ -118,7 +118,7 @@ async def data_collector():
 
     # 初始化采集器
     collector = FlowtimeCollector(
-        name='Flowtime',
+        # name='Flowtime',
         model_nbr_uuid=model_nbr_uuid,
         device_identify=device_identify,
         device_disconnected_callback=device_disconnected,

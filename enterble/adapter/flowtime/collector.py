@@ -45,7 +45,6 @@ class FlowtimeCollector(Collector):
 
     def __init__(
         self,
-        name: str,
         model_nbr_uuid: str,
         device_identify: str,
         device_disconnected_callback: Optional[Callable[["BaseBleakClient"], None]],
@@ -53,11 +52,12 @@ class FlowtimeCollector(Collector):
         wear_status_callback: callable,
         eeg_data_callback: callable,
         hr_data_callback: callable,
+        name: str = None,
     ) -> None:
         """采集器初始化
 
         Args:
-            name (str): 设备名称
+            name (str): 设备名称(不知道设备名, 可以不指定)
             model_nbr_uuid (str): 设备广播 UUID
             device_identify (str): 设备标识
             device_disconnected_callback (Optional[Callable[["BaseBleakClient"], None]]): 设备断开回调
