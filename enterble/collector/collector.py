@@ -55,7 +55,7 @@ class Collector(object):
         while not found:
             logger.info('Scanning for %s...', self.name)
             self.device = await DeviceScanner.get_device(
-                self.name, self.model_nbr_uuid, self.device_identify
+                name=self.name, model_nbr_uuid=self.model_nbr_uuid, device_identify=self.device_identify
             )
             if self.device:
                 await self.device.set_soc_cal_call(self.device_soc_cal_callback)
