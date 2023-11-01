@@ -58,11 +58,17 @@ class Collector(object):
                 name=self.name, model_nbr_uuid=self.model_nbr_uuid, device_identify=self.device_identify
             )
             if self.device:
-                await self.device.set_soc_cal_call(self.device_soc_cal_callback)
                 found = True
                 logger.info('Found %s', self.device)
             else:
                 logger.info('%s not found, retrying...', self.name)
+
+        # 电量回调
+        await self.device.set_soc_cal_call(self.device_soc_cal_callback)
+
+        # 设备连接回调
+        if self.device_disconnected_callback:
+            await self.device.set_disconnected_callback(self.device_disconnected)
 
         # 启动通知前
         if self.before_notify_callback:
@@ -80,10 +86,6 @@ class Collector(object):
             for char_specifier, data in self.after_notify_callback.items():
                 await self.device.write_gatt_char(char_specifier, data)
                 logger.info('Write down code after notify: %s: %s', char_specifier, data)
-
-        # 设备连接回调
-        if self.device_disconnected_callback:
-            await self.device.set_disconnected_callback(self.device_disconnected)
 
         # 获取设备基础信息
         await self.device.get_soc()

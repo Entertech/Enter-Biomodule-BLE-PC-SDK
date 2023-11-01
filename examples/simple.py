@@ -107,7 +107,7 @@ async def data_collector():
     device_identify = (
         "d2:ab:3f:c9:37:ad"
         if platform.system() != "Darwin"
-        else "BFB2007D-998D-93EF-698C-8329CCAE5830"
+        else "1F59B8E7-2657-BAA2-D07F-D2C42F0914AF"
 
         # 5715AB89-77DA-2B7C-76D6-3C5F2EB056F2
         # 78CBBD90-7AA3-546A-D09D-D4BD1C0B8BA2
@@ -118,7 +118,7 @@ async def data_collector():
 
     # 初始化采集器
     collector = FlowtimeCollector(
-        # name='Flowtime',
+        name='Flowtime Headband',
         model_nbr_uuid=model_nbr_uuid,
         device_identify=device_identify,
         device_disconnected_callback=device_disconnected,
