@@ -62,8 +62,8 @@ logger = logging.getLogger(__name__)
 
 
 def bleak_log(level=logging.INFO):
-    import bleak
-    logger.info(f'Bleak version: {bleak.__version__}')
+    import importlib.metadata
+    logger.info('Bleak version: {}'.format(importlib.metadata.version('bleak')))
     logging.getLogger('bleak').setLevel(level=level)
 
 
@@ -148,12 +148,18 @@ async def data_collector():
     device_identify = (
         "d2:ab:3f:c9:37:ad"
         if platform.system() != "Darwin"
-        else "D5D4362A-1690-4204-B797-3015EEDB510E"
+        else "1F59B8E7-2657-BAA2-D07F-D2C42F0914AF"
+
+        # 5715AB89-77DA-2B7C-76D6-3C5F2EB056F2
+        # 78CBBD90-7AA3-546A-D09D-D4BD1C0B8BA2
+        # AAE31983-8A63-BBA9-3CD4-3EBECC8C315D
+
+        # 3ECF600B-E636-0AAF-4D43-F1DF37E42CF9
     )
 
     # 初始化采集器
     collector = FlowtimeCollector(
-        name='Flowtime',
+        name='Flowtime Headband',
         model_nbr_uuid=model_nbr_uuid,
         device_identify=device_identify,
         device_disconnected_callback=device_disconnected,
