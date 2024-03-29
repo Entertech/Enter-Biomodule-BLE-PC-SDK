@@ -36,8 +36,6 @@ Enter BLE SDK For PC 是[回车科技](https://www.entertech.cn/)提供的，适
     - `loop.run_until_complete(data_collector())`
 6. 运行 simple.py
 
-应该就可以了
-
 Simple:
 
 ```python
